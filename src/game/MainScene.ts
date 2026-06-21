@@ -466,9 +466,12 @@ export default class MainScene extends Phaser.Scene {
     this.loadAchievements();
     this.checkDailyReward();
 
-    this.input.once('pointerdown', () => {
+    this.input.on('pointerdown', () => {
       Audio.startBgMusic();
       Audio.initAudio();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
     });
 
     this.input.keyboard!.on('keydown-F', () => {
