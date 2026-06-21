@@ -416,9 +416,7 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.score = 0;
-    // this.coins is preserved from init() or class default properties
     this.streak = 0;
-    // this.level is preserved from init() or class default properties
 
     const w = this.scale.width;
     this.xRatio = w / 400;
@@ -471,6 +469,14 @@ export default class MainScene extends Phaser.Scene {
     this.input.once('pointerdown', () => {
       Audio.startBgMusic();
       Audio.initAudio();
+    });
+
+    this.input.keyboard!.on('keydown-F', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
     });
 
     // Determine total flasks for this level dynamically based on actual loaded/reset level
@@ -2286,7 +2292,7 @@ export default class MainScene extends Phaser.Scene {
      if (!this.beltGraphics) return;
      const bg = this.beltGraphics;
      bg.clear();
-     const beltH = 80;
+    const beltH = 80;
      const segmentWidth = 60;
      const w = this.scale.width;
      
