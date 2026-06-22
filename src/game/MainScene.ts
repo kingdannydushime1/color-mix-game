@@ -2887,14 +2887,10 @@ export default class MainScene extends Phaser.Scene {
     this.pendingRewardCoins = reward;
     this.targetCoinsText.setText(`$+${reward}`);
 
-    // Variable timers based on target complexity: 1 color = 20s, 2 = 30s, 3 = 40s.
-    // Only set on the first flask — timer continues through subsequent orders.
+    // Individual timer per flask: 1 color = 12s, 2 = 18s, 3 = 25s.
     const activeColorsCount = (target.r > 0 ? 1 : 0) + (target.b > 0 ? 1 : 0) + (target.y > 0 ? 1 : 0);
-    const timeForDifficulty = activeColorsCount === 1 ? 20 : activeColorsCount === 2 ? 30 : 50;
-    if (this.completedFlasksInLevel === 0) {
-        this.timeLeft = timeForDifficulty;
-        this.timerText.setColor('#ffd700');
-    }
+    this.timeLeft = activeColorsCount === 1 ? 12 : activeColorsCount === 2 ? 18 : 25;
+    this.timerText.setColor('#ffd700');
     this.timerText.setText(`⏱️ ${this.timeLeft}s`);
 
     this.currentFlask = flask;
@@ -4259,7 +4255,7 @@ export default class MainScene extends Phaser.Scene {
          targets: glow, scale: 3, alpha: 0,
          duration: 600, ease: 'Quad.easeOut'
       });
-      this.time.delayedCall(1800, () => {
+      this.time.delayedCall(800, () => {
          this.tweens.add({
             targets: cont, scale: 1.2, alpha: 0,
             duration: 250, ease: 'Quad.easeIn',
