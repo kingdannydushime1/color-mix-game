@@ -2887,11 +2887,13 @@ export default class MainScene extends Phaser.Scene {
     this.pendingRewardCoins = reward;
     this.targetCoinsText.setText(`$+${reward}`);
 
-    // Individual timer per flask: 1 color = 12s, 2 = 18s, 3 = 25s.
-    const activeColorsCount = (target.r > 0 ? 1 : 0) + (target.b > 0 ? 1 : 0) + (target.y > 0 ? 1 : 0);
-    this.timeLeft = activeColorsCount === 1 ? 12 : activeColorsCount === 2 ? 18 : 25;
-    this.timerText.setColor('#ffd700');
-    this.timerText.setText(`⏱️ ${this.timeLeft}s`);
+    // Timer set once per level based on total flasks count: 1 flask = 12s, 2 = 18s, 3 = 25s.
+    // +1s per correct drop added in handleDropFlask.
+    if (this.completedFlasksInLevel === 0) {
+        this.timeLeft = this.totalFlasksInLevel === 1 ? 12 : this.totalFlasksInLevel === 2 ? 18 : 25;
+        this.timerText.setColor('#ffd700');
+        this.timerText.setText(`⏱️ ${this.timeLeft}s`);
+    }
 
     this.currentFlask = flask;
 
@@ -3221,6 +3223,12 @@ export default class MainScene extends Phaser.Scene {
         if (f.currentDose[type] !== undefined) {
             f.currentDose[type]++;
         }
+    }
+
+    // +1s per drop, extra for compound drops
+    this.timeLeft += size;
+    if (this.timerText) {
+        this.timerText.setText(`⏱️ ${this.timeLeft}s`);
     }
 
     drop.destroy();
@@ -4884,11 +4892,6 @@ export default class MainScene extends Phaser.Scene {
      this.levelCoinsEarnedInSession = 0;
      this.undosRemaining = 3; // Refilled
      
-     this.timeLeft = 30;
-     if (this.timerText) {
-         this.timerText.setText(`⏱️ ${this.timeLeft}s`);
-     }
-     
      // Determine dynamic flasks sequence size for this level
      // Randomly sets sequence sizes (1 to 3 blocks) for levels, keeping things diverse!
      if (this.level <= 1) {
@@ -4900,6 +4903,11 @@ export default class MainScene extends Phaser.Scene {
          // 25% single, 50% double, 25% triple
          const dVal = Math.random();
          this.totalFlasksInLevel = (dVal < 0.25) ? 1 : (dVal < 0.75) ? 2 : 3;
+     }
+     
+     this.timeLeft = this.totalFlasksInLevel === 1 ? 12 : this.totalFlasksInLevel === 2 ? 18 : 25;
+     if (this.timerText) {
+         this.timerText.setText(`⏱️ ${this.timeLeft}s`);
      }
      
      if (this.undoIndicatorText) {
