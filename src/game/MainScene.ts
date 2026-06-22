@@ -131,7 +131,6 @@ export default class MainScene extends Phaser.Scene {
   private totalFlasksInLevel = 1;
   private completedFlasksInLevel = 0;
   private isLevelSuccessPopupOpen = false;
-  private initialTimerForFlask = 30;
   private levelCoinsEarnedInSession = 0;
   private currentChallengeModifier: string | null = null;
   private challengeModifiers = [
@@ -432,13 +431,10 @@ export default class MainScene extends Phaser.Scene {
     this.hintLayer = null;
     this.isAdRunning = false;
     this.currentTargetColor = 0xffffff;
-    this.victoryPopupContainer = null;
-    this.isValidating = false;
-
-    this.timeLeft = 30;
-    this.initialTimerForFlask = this.timeLeft;
-
-    this.dropletStocks = { r: 3, b: 3, y: 3 };
+     this.victoryPopupContainer = null;
+     this.isValidating = false;
+     
+     this.dropletStocks = { r: 3, b: 3, y: 3 };
     this.activePanelElements = [];
     this.completedCount = 0;
     this.stackedBoxes = [];
@@ -3146,9 +3142,9 @@ export default class MainScene extends Phaser.Scene {
     this.physics.world.enable(d);
     
     const body = d.body as Phaser.Physics.Arcade.Body;
-    body.setCircle(10, -10, -5); 
-    body.setVelocity(0, 0);
-    body.setGravityY(800);
+     body.setCircle(10, -10, -5); 
+     body.setVelocity(0, 280);
+     body.setGravityY(800);
 
     this.dropsGroup.add(d);
   }
@@ -3311,11 +3307,11 @@ export default class MainScene extends Phaser.Scene {
     this.scannerGroup.x = flask.x;
     this.scannerGroup.y = -200;
     
-    this.tweens.add({
-        targets: this.scannerGroup,
-        y: flask.y - 120, // Lowers scanning head over flask
-        duration: 400,
-        ease: 'Power2',
+     this.tweens.add({
+         targets: this.scannerGroup,
+         y: flask.y - 120,
+         duration: 200,
+         ease: 'Power2',
         onComplete: () => {
             const matchPercent = Colors.getSimilarityPercentage(f.currentDose, f.targetDose);
             const isMatch = matchPercent === 100;
@@ -3366,7 +3362,7 @@ export default class MainScene extends Phaser.Scene {
 
                 setTimeout(() => {
                     this.scannerLight.setFillStyle(0x747d8c);
-                    this.tweens.add({ targets: this.scannerGroup, y: -200, duration: 400 });
+                    this.tweens.add({ targets: this.scannerGroup, y: -200, duration: 200 });
                     
                     // Spawn package container exactly at the flask's current position
                     const boxCont = this.add.container(flask.x, flask.y).setDepth(21);
@@ -3399,13 +3395,13 @@ export default class MainScene extends Phaser.Scene {
                             const targetX = Math.round(355 * this.xRatio);
                             const targetY = 332 - 12 - (this.completedCount * 22);
 
-                            this.tweens.add({
-                                targets: boxCont,
-                                x: targetX,
-                                y: targetY,
-                                angle: -15, // dynamic fly tilt
-                                duration: 650,
-                                ease: 'Quad.easeInOut',
+                             this.tweens.add({
+                                 targets: boxCont,
+                                 x: targetX,
+                                 y: targetY,
+                                 angle: -15,
+                                 duration: 400,
+                                 ease: 'Quad.easeInOut',
                                 onComplete: () => {
                                     // Land with robust squash and impact audio
                                     Audio.playHit();
@@ -3452,8 +3448,8 @@ export default class MainScene extends Phaser.Scene {
                             });
                         }
                     });
-                }, 800);
-
+                }, 400);
+ 
             } else {
                 Audio.playLose();
                 this.streak = 0;
@@ -3474,7 +3470,7 @@ export default class MainScene extends Phaser.Scene {
                             f.progressTxt.setColor('#2f3542');
                         }
                     });
-                }, 800);
+                }, 400);
             }
             
             this.updateScoreHUD();
@@ -4268,10 +4264,10 @@ export default class MainScene extends Phaser.Scene {
          targets: glow, scale: 3, alpha: 0,
          duration: 600, ease: 'Quad.easeOut'
       });
-      this.time.delayedCall(800, () => {
+      this.time.delayedCall(300, () => {
          this.tweens.add({
             targets: cont, scale: 1.2, alpha: 0,
-            duration: 250, ease: 'Quad.easeIn',
+            duration: 200, ease: 'Quad.easeIn',
             onComplete: () => cont.destroy()
          });
       });
