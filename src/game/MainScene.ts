@@ -4853,18 +4853,6 @@ export default class MainScene extends Phaser.Scene {
       }
    }
 
-   flashScreen(color: number = 0xffffff, duration: number = 200) {
-      const w = this.scale.width;
-      const h = this.scale.height;
-      const flash = this.add.rectangle(w/2, h/2, w, h, color, 0.6).setDepth(300);
-      this.tweens.add({
-        targets: flash,
-        alpha: 0,
-        duration,
-        onComplete: () => flash.destroy()
-      });
-   }
-
    triggerSimulatedCommercialAd() {
       this.showCrazyRewardedAd("CLAIM EXTRA COINS", 3, () => {
           this.startNextLevel(true);
