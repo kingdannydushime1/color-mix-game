@@ -134,9 +134,9 @@ export default class MainScene extends Phaser.Scene {
   private levelCoinsEarnedInSession = 0;
   private currentChallengeModifier: string | null = null;
   private challengeModifiers = [
-    { id: 'speed', name: '⚡ SPEED', desc: 'Fast completion = 2x coins!', color: '#ffeb3b', rewardMult: 2, timeMult: 0.7 },
-    { id: 'precision', name: '🎯 PRECISION', desc: 'Must be >95% match!', color: '#ff6b81', rewardMult: 1.5, timeMult: 1.2 },
-    { id: 'bonus', name: '💰 BONUS', desc: '2x coins!', color: '#ffd700', rewardMult: 2, timeMult: 1 },
+    { id: 'speed', name: '⚡ SPEED', desc: 'Fast completion = 2x coins!', color: '#ffeb3b', rewardMult: 2, timeMult: 0.7, speedMult: 1.5 },
+    { id: 'precision', name: '🎯 PRECISION', desc: 'Must be >95% match!', color: '#ff6b81', rewardMult: 1.5, timeMult: 1.2, speedMult: 1 },
+    { id: 'bonus', name: '💰 BONUS', desc: '2x coins!', color: '#ffd700', rewardMult: 2, timeMult: 1, speedMult: 1 },
   ];
   private levelTimerBase = 0;
   private challengeModifierText: Phaser.GameObjects.Text | null = null;
@@ -462,15 +462,13 @@ export default class MainScene extends Phaser.Scene {
     };
 
     this.loadGameState();
+    this.dropletStocks = { r: 3, b: 3, y: 3 };
     this.loadAchievements();
     this.checkDailyReward();
 
     this.input.on('pointerdown', () => {
       Audio.startBgMusic();
       Audio.initAudio();
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      }
     });
 
     this.input.keyboard!.on('keydown-F', () => {
@@ -1161,7 +1159,7 @@ export default class MainScene extends Phaser.Scene {
            
            const w = this.scale.width;
            const h = this.scale.height;
-           const feedback = this.add.text(w/2, h/2, `+5 Free ${label} Drops!`, {
+            const feedback = this.add.text(w/2, h/2, `+3 Free ${label} Drops!`, {
                fontSize: '22px', 
                color: '#00ffcc', 
                fontStyle: 'bold',
@@ -1307,9 +1305,9 @@ export default class MainScene extends Phaser.Scene {
       const spaceY = 74;
 
       const dropsList = [
-        { id: 'refill_r', type: 'refill', colorId: 'r', name: 'Refill RED', desc: 'Add +5 Fire Drops', price: 200, color: 0xff3b30 },
-        { id: 'refill_b', type: 'refill', colorId: 'b', name: 'Refill BLUE', desc: 'Add +5 Water Drops', price: 200, color: 0x00a8ff },
-        { id: 'refill_y', type: 'refill', colorId: 'y', name: 'Refill YELLOW', desc: 'Add +5 Light Drops', price: 200, color: 0xffea00 }
+        { id: 'refill_r', type: 'refill', colorId: 'r', name: 'Refill RED', desc: 'Add +3 Fire Drops', price: 400, color: 0xff3b30 },
+        { id: 'refill_b', type: 'refill', colorId: 'b', name: 'Refill BLUE', desc: 'Add +3 Water Drops', price: 400, color: 0x00a8ff },
+        { id: 'refill_y', type: 'refill', colorId: 'y', name: 'Refill YELLOW', desc: 'Add +3 Light Drops', price: 400, color: 0xffea00 }
       ];
 
       dropsList.forEach((item, index) => {
@@ -2947,8 +2945,8 @@ export default class MainScene extends Phaser.Scene {
           const stockCount = this.dropletStocks[colorId] !== undefined ? this.dropletStocks[colorId] : 3;
          const dotY = by - 38;
          const dotSpacing = 8;
-         const startDotX = bx - (2 * dotSpacing);
-         for (let dotIdx = 0; dotIdx < 5; dotIdx++) {
+         const startDotX = bx - (1 * dotSpacing);
+         for (let dotIdx = 0; dotIdx < 3; dotIdx++) {
             const dotX = startDotX + dotIdx * dotSpacing;
             const outerDot = this.add.circle(dotX, dotY, 3, 0x110803).setDepth(51);
             this.activePanelElements.push(outerDot);
@@ -4313,8 +4311,11 @@ export default class MainScene extends Phaser.Scene {
       this.drawBeltPattern();
     }
 
-    if (this.currentFlask && !this.isValidating && this.timeLeft > 0 && !this.isLevelSuccessPopupOpen && !this.isShopOpen && !this.isAdRunning && !this.isHintOpen) {
-        this.currentFlask.x += 240 * (delta / 1000);
+     if (this.currentFlask && !this.isValidating && this.timeLeft > 0 && !this.isLevelSuccessPopupOpen && !this.isShopOpen && !this.isAdRunning && !this.isHintOpen) {
+        let speed = 240;
+        const mod = this.getFlaskModifier();
+        if (mod && mod.speedMult) speed *= mod.speedMult;
+        this.currentFlask.x += speed * (delta / 1000);
         
         const f = this.currentFlask as any;
         const matchPercent = Colors.getSimilarityPercentage(f.currentDose, f.targetDose);
