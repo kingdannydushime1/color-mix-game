@@ -3623,32 +3623,33 @@ export default class MainScene extends Phaser.Scene {
       });
    }
 
-   showCrazyRewardedAd(adTitle: string, durationSeconds: number, onCompleteCallback: () => void) {
-      if (this.isAdRunning) return;
+    showCrazyRewardedAd(adTitle: string, durationSeconds: number, onCompleteCallback: () => void) {
+       if (this.isAdRunning) return;
 
-      const sdk = (window as any).CrazyGames?.SDK;
-      const canUseCrazy = sdk && (sdk.environment === 'local' || sdk.environment === 'crazygames');
+       const isCrazyEnv = window.location.hostname === 'localhost' ||
+                          window.location.hostname === 'crazygames.com' ||
+                          window.location.hostname.endsWith('.crazygames.com');
+       const sdk = (window as any).CrazyGames?.SDK;
 
-      if (!canUseCrazy) {
-         this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
-         return;
-      }
+       if (!isCrazyEnv || !sdk) {
+          this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
+          return;
+       }
 
-      this.isAdRunning = true;
-      Audio.pauseBgMusic();
+       this.isAdRunning = true;
+       Audio.pauseBgMusic();
 
-      sdk.ad.requestAd("rewarded")
-         .then(() => {
-            this.isAdRunning = false;
-            Audio.resumeBgMusic();
-            onCompleteCallback();
-         })
-         .catch((error: any) => {
-            console.warn("CrazyGames rewarded ad failed:", error);
-            this.isAdRunning = false;
-            Audio.resumeBgMusic();
-          });
-   }
+       sdk.ad.requestAd("rewarded")
+          .then(() => {
+             this.isAdRunning = false;
+             Audio.resumeBgMusic();
+             onCompleteCallback();
+          })
+          .catch((error: any) => {
+             console.warn("CrazyGames rewarded ad failed:", error);
+             this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
+           });
+    }
 
    saveHighScore() {
       const sdk = (window as any).CrazyGames?.SDK;
