@@ -3644,9 +3644,10 @@ export default class MainScene extends Phaser.Scene {
              onCompleteCallback();
           })
           .catch((error: any) => {
-             console.warn("CrazyGames rewarded ad failed:", error);
-             this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
-           });
+              console.warn("CrazyGames rewarded ad failed:", error);
+              this.isAdRunning = false;
+              this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
+            });
     }
 
    saveHighScore() {
