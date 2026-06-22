@@ -86,13 +86,13 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'r', name: 'RED', color: Colors.RYB.R, price: 0, sellPrice: 0, isBase: true },
   { id: 'b', name: 'BLUE', color: Colors.RYB.B, price: 0, sellPrice: 0, isBase: true },
   { id: 'y', name: 'YELLOW', color: Colors.RYB.Y, price: 0, sellPrice: 0, isBase: true },
-  { id: 'orange', name: 'ORANGE', color: 0xff8800, price: 80, sellPrice: 40, isBase: false },
-  { id: 'green', name: 'GREEN', color: 0x22cc44, price: 80, sellPrice: 40, isBase: false },
-  { id: 'purple', name: 'PURPLE', color: 0x9933cc, price: 80, sellPrice: 40, isBase: false },
-  { id: 'brown', name: 'BROWN', color: 0x664422, price: 120, sellPrice: 60, isBase: false },
-  { id: 'cyan', name: 'CYAN', color: 0x00f3ff, price: 150, sellPrice: 75, isBase: false },
-  { id: 'magenta', name: 'MAGENTA', color: 0xff00b7, price: 150, sellPrice: 75, isBase: false },
-  { id: 'white', name: 'WHITE', color: 0xffffff, price: 200, sellPrice: 100, isBase: false }
+  { id: 'orange', name: 'ORANGE', color: 0xff8800, price: 160, sellPrice: 80, isBase: false },
+  { id: 'green', name: 'GREEN', color: 0x22cc44, price: 160, sellPrice: 80, isBase: false },
+  { id: 'purple', name: 'PURPLE', color: 0x9933cc, price: 160, sellPrice: 80, isBase: false },
+  { id: 'brown', name: 'BROWN', color: 0x664422, price: 240, sellPrice: 120, isBase: false },
+  { id: 'cyan', name: 'CYAN', color: 0x00f3ff, price: 300, sellPrice: 150, isBase: false },
+  { id: 'magenta', name: 'MAGENTA', color: 0xff00b7, price: 300, sellPrice: 150, isBase: false },
+  { id: 'white', name: 'WHITE', color: 0xffffff, price: 400, sellPrice: 200, isBase: false }
 ];
 
 export default class MainScene extends Phaser.Scene {
@@ -196,7 +196,7 @@ export default class MainScene extends Phaser.Scene {
 
   // Limited droplet stocks and beautiful cosmetic droplet skin upgrades
   private health = 100;
-  private dropletStocks: { [key: string]: number } = { r: 5, b: 5, y: 5 };
+  private dropletStocks: { [key: string]: number } = { r: 3, b: 3, y: 3 };
   private ownedDropSkins: { [key: string]: boolean } = {
      classic_r: true, ruby_r: false, magma_r: false,
      classic_b: true, sapphire_b: false, plasma_b: false,
@@ -437,7 +437,7 @@ export default class MainScene extends Phaser.Scene {
     this.timeLeft = 30;
     this.initialTimerForFlask = this.timeLeft;
 
-    this.dropletStocks = { r: 5, b: 5, y: 5 };
+    this.dropletStocks = { r: 3, b: 3, y: 3 };
     this.activePanelElements = [];
     this.completedCount = 0;
     this.stackedBoxes = [];
@@ -924,7 +924,7 @@ export default class MainScene extends Phaser.Scene {
       tapCont.add(badgeCont);
 
       // Droplet stock remaining count text indicator on faucet!
-      const stockVal = this.dropletStocks[colorId] !== undefined ? this.dropletStocks[colorId] : 5;
+      const stockVal = this.dropletStocks[colorId] !== undefined ? this.dropletStocks[colorId] : 3;
       const stockText = this.add.text(0, 106, `${stockVal} 💧`, {
          fontSize: '11px',
          color: stockVal === 0 ? '#ff4757' : '#00f3ff',
@@ -1049,11 +1049,11 @@ export default class MainScene extends Phaser.Scene {
 
     panel.add([titleTxt, msgTxt, circle, dropVisual]);
 
-    // BUY BUTTON: 5 Drops for $200
+    // BUY BUTTON: 5 Drops for $400
     const buyBtnCont = this.add.container(-60, 65);
     const buyBtnBase = this.add.rectangle(0, 3, 105, 34, 0x10ac84).setStrokeStyle(3, 0x000000);
     const buyBtnBody = this.add.rectangle(0, 0, 105, 34, 0x1dd1a1).setStrokeStyle(3, 0x000000);
-    const buyTxt = this.add.text(0, 0, 'BUY +5 ($200)', {
+    const buyTxt = this.add.text(0, 0, 'BUY +5 ($400)', {
       fontSize: '11px',
       color: '#ffffff',
       fontStyle: 'bold',
@@ -1097,8 +1097,8 @@ export default class MainScene extends Phaser.Scene {
       buyBtnBody.y = 3;
       buyTxt.y = 3;
       
-      if (this.coins >= 200) {
-        this.coins -= 200;
+      if (this.coins >= 400) {
+        this.coins -= 400;
         this.dropletStocks[type] = (this.dropletStocks[type] || 0) + 5;
         this.updateScoreHUD();
         this.updateTapStockLabel(type);
@@ -2947,8 +2947,8 @@ export default class MainScene extends Phaser.Scene {
          const bhl = this.add.circle(-8, -8, 12, 0xffffff, 0.4);
          bcont.add([bbody, bhl]);
 
-         // Draw 5 mini stock dots above the button to show depletion
-         const stockCount = this.dropletStocks[colorId] !== undefined ? this.dropletStocks[colorId] : 5;
+          // Draw 3 mini stock dots above the button to show depletion
+          const stockCount = this.dropletStocks[colorId] !== undefined ? this.dropletStocks[colorId] : 3;
          const dotY = by - 38;
          const dotSpacing = 8;
          const startDotX = bx - (2 * dotSpacing);
@@ -2966,8 +2966,8 @@ export default class MainScene extends Phaser.Scene {
             }
          }
 
-         // Active tap label ("TAP A", "TAP B", "TAP C")
-         const tapLabelName = `TAP ${String.fromCharCode(65 + idx)}`;
+        // Active tap label ("TAP 1", "TAP 2", "TAP 3")
+        const tapLabelName = `TAP ${idx + 1}`;
          const blabel = this.add.text(bx, by + 42, `${tapLabelName}\n(${colorName})`, { 
            fontSize: '10px', 
            color: '#ffd3a3', 
@@ -3223,12 +3223,6 @@ export default class MainScene extends Phaser.Scene {
         if (f.currentDose[type] !== undefined) {
             f.currentDose[type]++;
         }
-    }
-
-    // +1s per drop, extra for compound drops
-    this.timeLeft += size;
-    if (this.timerText) {
-        this.timerText.setText(`⏱️ ${this.timeLeft}s`);
     }
 
     drop.destroy();
@@ -3881,7 +3875,7 @@ export default class MainScene extends Phaser.Scene {
      const tap = this.taps[idx];
      if (tap && (tap as any).stockTextObj) {
         const textObj = (tap as any).stockTextObj as Phaser.GameObjects.Text;
-        const currentStock = this.dropletStocks[type] !== undefined ? this.dropletStocks[type] : 5;
+        const currentStock = this.dropletStocks[type] !== undefined ? this.dropletStocks[type] : 3;
         textObj.setText(`${currentStock} 💧`);
         if (currentStock === 0) {
            textObj.setColor('#ff4757');
@@ -4859,11 +4853,11 @@ export default class MainScene extends Phaser.Scene {
   startNextLevel(multiplyRewards: boolean) {
      this.isLevelSuccessPopupOpen = false;
      
-     // Reset droplet stocks to 5 at each level!
-     this.dropletStocks = { r: 5, b: 5, y: 5 };
-     this.updateTapStockLabel('r');
-     this.updateTapStockLabel('b');
-     this.updateTapStockLabel('y');
+      // Reset droplet stocks to 3 at each level!
+      this.dropletStocks = { r: 3, b: 3, y: 3 };
+      this.updateTapStockLabel('r');
+      this.updateTapStockLabel('b');
+      this.updateTapStockLabel('y');
      this.generatePanelButtons();
      
      // Destroy physical stacked boxes / gifts from previous levels so they do not accumulate
