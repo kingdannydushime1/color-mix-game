@@ -4655,7 +4655,7 @@ export default class MainScene extends Phaser.Scene {
          fontFamily: 'monospace'
      }).setOrigin(0.5);
      
-     const ordersLabel = this.add.text(w/2, h/2 - 47, `Flacons Emballés: ${this.totalFlasksInLevel}/${this.totalFlasksInLevel} 🧪`, {
+     const ordersLabel = this.add.text(w/2, h/2 - 47, `Flasks Shipped: ${this.totalFlasksInLevel}/${this.totalFlasksInLevel} 🧪`, {
          fontSize: '16px',
          color: '#54a0ff',
          fontFamily: 'sans-serif',
