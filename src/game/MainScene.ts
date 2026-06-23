@@ -3619,31 +3619,9 @@ export default class MainScene extends Phaser.Scene {
       setTimeout(finishAd, (durationSeconds * 1000) + 500);
    }
 
-     showCrazyRewardedAd(adTitle: string, durationSeconds: number, onCompleteCallback: () => void) {
+     showCrazyRewardedAd(adTitle: string, _durationSeconds: number, _onCompleteCallback: () => void) {
         if (this.isAdRunning) return;
-
-        const isCrazyEnv = window.location.hostname === 'localhost' ||
-                           window.location.hostname === 'crazygames.com' ||
-                           window.location.hostname.endsWith('.crazygames.com');
-        const sdk = (window as any).CrazyGames?.SDK;
-
-        if (!isCrazyEnv || !sdk) {
-           this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
-           return;
-        }
-
-        this.isAdRunning = true;
-
-        sdk.ad.requestAd("rewarded")
-           .then(() => {
-              this.isAdRunning = false;
-              onCompleteCallback();
-           })
-           .catch((error: any) => {
-               console.warn("CrazyGames rewarded ad failed:", error);
-               this.isAdRunning = false;
-               this.showAdUnavailableMessage(adTitle);
-             });
+        this.showAdUnavailableMessage(adTitle);
      }
 
      showAdUnavailableMessage(adTitle: string) {
