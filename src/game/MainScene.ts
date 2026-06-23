@@ -284,6 +284,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   showDailyRewardPopup(coinsAmount: number, streak: number) {
+    this.isShopOpen = true;
     const w = this.scale.width;
     const h = this.scale.height;
     this.coins += coinsAmount;
@@ -303,6 +304,7 @@ export default class MainScene extends Phaser.Scene {
       Audio.playClick();
       Audio.playCashRegister();
       Audio.haptic(20);
+      this.isShopOpen = false;
       this.spawnCoinRain(15);
       this.flashScreen(0xffd700, 200);
       this.tweens.add({ targets: cont, scale: 0.5, alpha: 0, duration: 250, onComplete: () => cont.destroy() });
@@ -995,6 +997,7 @@ export default class MainScene extends Phaser.Scene {
 
   showOutofDropsPrompt(type: string) {
     if (this.isValidating) return;
+    this.isShopOpen = true;
     
     // Play buzzer sound
     Audio.initAudio();
@@ -1107,6 +1110,7 @@ export default class MainScene extends Phaser.Scene {
         this.generatePanelButtons(); // redraw panel buttons representing stock dots!
         Audio.playCashRegister();
         this.saveGameState();
+        this.isShopOpen = false;
         promptCont.destroy();
       } else {
         Audio.playHit();
@@ -1136,6 +1140,7 @@ export default class MainScene extends Phaser.Scene {
       adTxt.y = 3;
       
       // Play brief rewarding ad and refill drops!
+      this.isShopOpen = false;
       promptCont.destroy();
       this.triggerSimulatedDropsAd(type);
     });
@@ -1146,6 +1151,7 @@ export default class MainScene extends Phaser.Scene {
     });
 
     closeBtn.on('pointerdown', () => {
+      this.isShopOpen = false;
       promptCont.destroy();
     });
   }
