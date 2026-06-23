@@ -8,23 +8,8 @@ export default function App() {
     let game: Phaser.Game | null = null;
 
     const init = async () => {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const aspect = vw / vh;
-      const isNarrow = aspect < 0.5 || vw < 500;
-      let gameWidth = isNarrow ? 400 : 540;
-      let gameHeight = 800;
-      const gameAspect = gameWidth / gameHeight;
-
-      if (aspect > gameAspect) {
-        gameHeight = Math.round(vh * 0.92);
-        gameHeight = Math.max(400, Math.min(900, gameHeight));
-        gameWidth = Math.round(gameHeight * gameAspect);
-      } else {
-        gameWidth = Math.round(vw * 0.92);
-        gameWidth = Math.max(300, Math.min(600, gameWidth));
-        gameHeight = Math.round(gameWidth / gameAspect);
-      }
+      const isNarrow = window.innerWidth / window.innerHeight < 0.5 || window.innerWidth < 500;
+      const gameWidth = isNarrow ? 400 : 540;
       const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
         parent: 'phaser-container',
@@ -32,7 +17,7 @@ export default function App() {
           mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH,
           width: gameWidth,
-          height: gameHeight
+          height: 800
         },
         physics: {
           default: 'arcade',

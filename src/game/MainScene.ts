@@ -182,8 +182,6 @@ export default class MainScene extends Phaser.Scene {
   private tapIndicators: Phaser.GameObjects.Arc[] = [];
   private tapData: Array<{ color: number, type: string, x: number, cont: Phaser.GameObjects.Container, handle: Phaser.GameObjects.Graphics, spout: Phaser.GameObjects.Graphics }> = [];
   private xRatio = 1;
-  private yRatio = 1;
-  private baseHeight = 800;
   
   private tapXList = [80, 200, 320];
   private tapColorsOriginal = [Colors.RYB.R, Colors.RYB.B, Colors.RYB.Y];
@@ -427,12 +425,8 @@ export default class MainScene extends Phaser.Scene {
     this.streak = 0;
 
     const w = this.scale.width;
-    const h = this.scale.height;
     this.xRatio = w / 400;
-    this.yRatio = h / this.baseHeight;
     this.tapXList = [Math.round(80 * this.xRatio), Math.round(200 * this.xRatio), Math.round(320 * this.xRatio)];
-    this.beltY = Math.round(380 * this.yRatio);
-    this.pipeY = Math.round(145 * this.yRatio);
 
     // Reset transient refs cleanly
     this.currentFlask = null;
@@ -503,7 +497,8 @@ export default class MainScene extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor('#a0e0ff');
     
-    const beltH = Math.round(80 * this.yRatio);
+    const h = this.scale.height;
+    const beltH = 80;
 
     // Draw the active background theme
     this.drawBackgroundAndTheme();
@@ -520,7 +515,7 @@ export default class MainScene extends Phaser.Scene {
     this.targetCoinsText = this.add.text(w - 30 * this.xRatio, 50, '$+50', { fontSize: '14px', color: '#ffd700', fontStyle: 'bold', fontFamily: 'monospace' }).setOrigin(1, 0).setDepth(6);
     
     const targetX = Math.round(80 * this.xRatio);
-    const targetY = Math.round(82 * this.yRatio);
+    const targetY = 82;
     const targetScale = 0.55;
 
     this.targetFlaskCont = this.add.container(targetX, targetY).setScale(targetScale).setDepth(6);
@@ -557,20 +552,19 @@ export default class MainScene extends Phaser.Scene {
     // Draw shipping pallet / delivery platform on the right side
     const pallet = this.add.graphics().setDepth(14);
     const rp = this.xRatio;
-    const py = Math.round(336 * this.yRatio);
     // Darker wooden frame for pallet feet
     pallet.fillStyle(0x3d2314, 1);
-    pallet.fillRect(Math.round(320 * rp), py, Math.round(10 * rp), 8);
-    pallet.fillRect(Math.round(350 * rp), py, Math.round(10 * rp), 8);
-    pallet.fillRect(Math.round(380 * rp), py, Math.round(10 * rp), 8);
+    pallet.fillRect(Math.round(320 * rp), 336, Math.round(10 * rp), 8);
+    pallet.fillRect(Math.round(350 * rp), 336, Math.round(10 * rp), 8);
+    pallet.fillRect(Math.round(380 * rp), 336, Math.round(10 * rp), 8);
     // Lighter slats for top of pallet
     pallet.fillStyle(0xa0522d, 1);
-    pallet.fillRect(Math.round(315 * rp), py - 4, Math.round(80 * rp), 5);
+    pallet.fillRect(Math.round(315 * rp), 332, Math.round(80 * rp), 5);
     pallet.lineStyle(1.5, 0x221105, 1);
-    pallet.strokeRect(Math.round(315 * rp), py - 4, Math.round(80 * rp), 5);
-    pallet.strokeRect(Math.round(320 * rp), py, Math.round(10 * rp), 8);
-    pallet.strokeRect(Math.round(350 * rp), py, Math.round(10 * rp), 8);
-    pallet.strokeRect(Math.round(380 * rp), py, Math.round(10 * rp), 8);
+    pallet.strokeRect(Math.round(315 * rp), 332, Math.round(80 * rp), 5);
+    pallet.strokeRect(Math.round(320 * rp), 336, Math.round(10 * rp), 8);
+    pallet.strokeRect(Math.round(350 * rp), 336, Math.round(10 * rp), 8);
+    pallet.strokeRect(Math.round(380 * rp), 336, Math.round(10 * rp), 8);
 
     // Groups
     this.dropsGroup = this.physics.add.group();
@@ -1930,7 +1924,7 @@ export default class MainScene extends Phaser.Scene {
 
   createPanel() {
     const w = this.scale.width;
-    const panelY = Math.round(480 * this.yRatio); 
+    const panelY = 480; 
     
     const panel = this.add.graphics().setDepth(50);
     const rp = this.xRatio;
@@ -2283,8 +2277,8 @@ export default class MainScene extends Phaser.Scene {
      if (!this.beltGraphics) return;
      const bg = this.beltGraphics;
      bg.clear();
-      const beltH = Math.round(80 * this.yRatio);
-       const segmentWidth = 60;
+    const beltH = 80;
+     const segmentWidth = 60;
      const w = this.scale.width;
      
      // Normalize the scroll offset to repeat seamlessly
@@ -2318,7 +2312,7 @@ export default class MainScene extends Phaser.Scene {
     this.health = Math.min(100, this.health + 40);
     this.updateHealthBar();
 
-    const floatTxt = this.add.text(Math.round(185 * this.xRatio), Math.round(480 * this.yRatio + 180 * this.yRatio), '+40% LAB STABILITY!', {
+    const floatTxt = this.add.text(Math.round(185 * this.xRatio), 480 + 180, '+40% LAB STABILITY!', {
         fontSize: '18px',
         color: '#2ed573',
         fontStyle: 'bold',
@@ -2329,7 +2323,7 @@ export default class MainScene extends Phaser.Scene {
 
     this.tweens.add({
         targets: floatTxt,
-        y: floatTxt.y - Math.round(120 * this.yRatio),
+        y: floatTxt.y - 120,
         scale: 1.3,
         alpha: 0,
         duration: 1200,
@@ -2338,7 +2332,7 @@ export default class MainScene extends Phaser.Scene {
     });
 
     for(let i=0; i<15; i++) {
-        const p = this.add.circle(Math.round(185 * this.xRatio), Math.round(480 * this.yRatio + 230 * this.yRatio), Phaser.Math.Between(4, 8), 0xff9f43).setDepth(150);
+        const p = this.add.circle(Math.round(185 * this.xRatio), 480 + 230, Phaser.Math.Between(4, 8), 0xff9f43).setDepth(150);
         this.physics.world.enable(p);
         const body = p.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(Phaser.Math.Between(-150, 150), Phaser.Math.Between(-250, -50));
@@ -3024,7 +3018,7 @@ export default class MainScene extends Phaser.Scene {
     Audio.playDrop(soundType as any);
     
     const tx = xPos;
-    const ty = Math.round(240 * this.yRatio);
+    const ty = 240;
 
     const dropG = this.add.graphics();
     const skin = this.activeDropSkins[type] || 'classic';
@@ -3384,7 +3378,7 @@ export default class MainScene extends Phaser.Scene {
                         onComplete: () => {
                             // Parabolic fly animation to stack platform
                             const targetX = Math.round(355 * this.xRatio);
-                            const targetY = Math.round(332 * this.yRatio - 12 - (this.completedCount * 22 * this.yRatio));
+                            const targetY = 332 - 12 - (this.completedCount * 22);
 
                              this.tweens.add({
                                  targets: boxCont,
