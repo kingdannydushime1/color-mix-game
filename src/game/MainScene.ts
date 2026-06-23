@@ -3598,35 +3598,38 @@ export default class MainScene extends Phaser.Scene {
       
       adContainer.add([sponsorText, gameText, adSloganText, loadingText, timerCountdownText, progressBarBg, progressBarFill]);
 
-      let durationLeft = durationSeconds; 
-      let ticksLeft = Math.round((durationSeconds * 1000) / 100);
-      
-      const progressTimer = this.time.addEvent({
+      const adStartTime = this.time.now;
+      let lastDisplayedSec = durationSeconds;
+
+      // UI update timer (non-critical — ad always completes via delayedCall)
+      this.time.addEvent({
           delay: 100,
-          repeat: ticksLeft - 1,
+          repeat: Math.round(durationSeconds * 10) - 1,
           callback: () => {
-              ticksLeft--;
-              const progress = Math.min(1, 1 - ticksLeft / (durationSeconds * 10));
+              const elapsed = this.time.now - adStartTime;
+              const progress = Math.min(1, elapsed / (durationSeconds * 1000));
               progressBarFill.width = 200 * progress;
-              const newSec = Math.ceil(durationSeconds - progress * durationSeconds);
-              if (newSec !== durationLeft && newSec >= 0) {
-                  durationLeft = newSec;
-                  if (durationLeft > 0) {
-                      timerCountdownText.setText(`REWARD UNLOCKS IN ${durationLeft}s`);
+              const remainingSec = Math.ceil(durationSeconds - progress * durationSeconds);
+              if (remainingSec !== lastDisplayedSec && remainingSec >= 0) {
+                  lastDisplayedSec = remainingSec;
+                  if (remainingSec > 0) {
+                      timerCountdownText.setText(`REWARD UNLOCKS IN ${remainingSec}s`);
                       Audio.playCoinChime();
                   } else {
                       timerCountdownText.setText("REWARD UNLOCKED! 🎁");
                       timerCountdownText.setColor("#2ecc71");
                   }
               }
-              if (ticksLeft <= 0) {
-                  Audio.playCashRegister();
-                  adContainer.destroy();
-                  this.isAdRunning = false;
-                  Audio.resumeBgMusic();
-                  onCompleteCallback();
-              }
           }
+      });
+
+      // Completion handler (single delayedCall — always fires)
+      this.time.delayedCall(durationSeconds * 1000, () => {
+          Audio.playCashRegister();
+          adContainer.destroy();
+          this.isAdRunning = false;
+          Audio.resumeBgMusic();
+          onCompleteCallback();
       });
    }
 
