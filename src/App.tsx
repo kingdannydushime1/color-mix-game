@@ -14,7 +14,7 @@ export default function App() {
         scale: {
           mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH,
-          width: 400,
+          width: 540,
           height: 800
         },
         physics: {
@@ -62,7 +62,7 @@ export default function App() {
 
   return (
     <div
-      className="w-screen h-dvh bg-[#0a0a0f] touch-none select-none overflow-hidden flex items-center justify-center"
+      className="w-screen h-dvh touch-none select-none overflow-hidden flex items-center justify-center relative z-10"
     >
       <div id="phaser-container" className="w-full h-full" />
     </div>

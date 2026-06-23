@@ -4304,6 +4304,7 @@ export default class MainScene extends Phaser.Scene {
                 t += Phaser.Math.Between(-1, 1);
             }
         }
+        t += totalFlasks === 3 ? 10 : totalFlasks === 2 ? 5 : 3;
         return Phaser.Math.Clamp(t, 4, 45);
     }
 
