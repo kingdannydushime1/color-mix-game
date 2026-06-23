@@ -142,7 +142,6 @@ export default class MainScene extends Phaser.Scene {
   private challengeModifierText: Phaser.GameObjects.Text | null = null;
   private activeConfettiGroup!: Phaser.GameObjects.Group;
   private undoIndicatorText!: Phaser.GameObjects.Text;
-  private musicIcon!: Phaser.GameObjects.Text;
   private victoryPopupContainer: Phaser.GameObjects.Container | null = null;
   
   // Stacking & Coin burst states
@@ -475,7 +474,6 @@ export default class MainScene extends Phaser.Scene {
     this.checkDailyReward();
 
     this.input.on('pointerdown', () => {
-      Audio.startBgMusic();
       Audio.initAudio();
     });
 
@@ -961,7 +959,6 @@ export default class MainScene extends Phaser.Scene {
       });
 
       hitArea.on('pointerdown', () => {
-         Audio.startBgMusic();
          Audio.initAudio();
          this.animateAndDispense(tapEntry);
       });
@@ -1059,11 +1056,11 @@ export default class MainScene extends Phaser.Scene {
 
     panel.add([titleTxt, msgTxt, circle, dropVisual]);
 
-    // BUY BUTTON: 3 Drops for $400
+    // BUY BUTTON: 3 Drops for $20
     const buyBtnCont = this.add.container(-60, 65);
     const buyBtnBase = this.add.rectangle(0, 3, 105, 34, 0x10ac84).setStrokeStyle(3, 0x000000);
     const buyBtnBody = this.add.rectangle(0, 0, 105, 34, 0x1dd1a1).setStrokeStyle(3, 0x000000);
-    const buyTxt = this.add.text(0, 0, 'BUY +3 ($400)', {
+    const buyTxt = this.add.text(0, 0, 'BUY +3 ($20)', {
       fontSize: '11px',
       color: '#ffffff',
       fontStyle: 'bold',
@@ -1107,8 +1104,8 @@ export default class MainScene extends Phaser.Scene {
       buyBtnBody.y = 3;
       buyTxt.y = 3;
       
-      if (this.coins >= 400) {
-        this.coins -= 400;
+      if (this.coins >= 20) {
+        this.coins -= 20;
         this.dropletStocks[type] = (this.dropletStocks[type] || 0) + 3;
         this.updateScoreHUD();
         this.updateTapStockLabel(type);
@@ -1319,9 +1316,9 @@ export default class MainScene extends Phaser.Scene {
       const spaceY = 74;
 
       const dropsList = [
-        { id: 'refill_r', type: 'refill', colorId: 'r', name: 'Refill RED', desc: 'Add +3 Fire Drops', price: 400, color: 0xff3b30 },
-        { id: 'refill_b', type: 'refill', colorId: 'b', name: 'Refill BLUE', desc: 'Add +3 Water Drops', price: 400, color: 0x00a8ff },
-        { id: 'refill_y', type: 'refill', colorId: 'y', name: 'Refill YELLOW', desc: 'Add +3 Light Drops', price: 400, color: 0xffea00 }
+        { id: 'refill_r', type: 'refill', colorId: 'r', name: 'Refill RED', desc: 'Add +3 Fire Drops', price: 20, color: 0xff3b30 },
+        { id: 'refill_b', type: 'refill', colorId: 'b', name: 'Refill BLUE', desc: 'Add +3 Water Drops', price: 20, color: 0x00a8ff },
+        { id: 'refill_y', type: 'refill', colorId: 'y', name: 'Refill YELLOW', desc: 'Add +3 Light Drops', price: 20, color: 0xffea00 }
       ];
 
       dropsList.forEach((item, index) => {
@@ -2075,35 +2072,7 @@ export default class MainScene extends Phaser.Scene {
         sBtnLabel.y = 15;
     });
 
-    // MUSIC toggle button
-    const mBtnX = Math.round(370 * r);
-    const mBtn = this.add.container(mBtnX, panelY + 230).setDepth(53);
-    const mBtnBase = this.add.rectangle(0, 3, 40, 40, 0x2d3436).setStrokeStyle(3, 0x000);
-    const mBtnBody = this.add.rectangle(0, 0, 40, 40, 0x636e72).setStrokeStyle(3, 0x000);
-    this.musicIcon = this.add.text(0, 0, '\u266B', { fontSize: '20px', color: '#fff' }).setOrigin(0.5);
-    mBtn.add([mBtnBase, mBtnBody, this.musicIcon]);
-    const mHit = this.add.rectangle(mBtnX, panelY + 230, 40, 40).setInteractive({ useHandCursor: true }).setDepth(55);
-    mHit.on('pointerdown', () => {
-        Audio.initAudio();
-        const on = Audio.toggleBgMusic();
-        this.musicIcon.setText(on ? '\u266B' : '\u2715');
-    });
 
-    // Volume slider
-    const volLabel = this.add.text(mBtnX, panelY + 205, 'VOL', { fontSize: '7px', color: '#a4b0be', fontFamily: 'monospace' }).setOrigin(0.5).setDepth(55);
-    const volBarBg = this.add.rectangle(mBtnX, panelY + 218, 36, 4, 0x2d3436).setDepth(55);
-    const volBarFill = this.add.rectangle(mBtnX - 17, panelY + 218, 36 * Audio.getMasterVolume(), 4, 0x74b9ff).setOrigin(0, 0.5).setDepth(55);
-    const volKnob = this.add.circle(mBtnX - 17 + 36 * Audio.getMasterVolume(), panelY + 218, 5, 0xdfe6e9).setDepth(56).setInteractive({ useHandCursor: true, draggable: true });
-    const volKnobGlow = this.add.circle(mBtnX - 17 + 36 * Audio.getMasterVolume(), panelY + 218, 8, 0x74b9ff, 0.2).setDepth(55);
-    this.input.setDraggable(volKnob);
-    volKnob.on('drag', (_p: any, dx: number) => {
-      let newX = Phaser.Math.Clamp(volKnob.x + dx, mBtnX - 17, mBtnX + 19);
-      volKnob.x = newX;
-      volKnobGlow.x = newX;
-      const vol = (newX - (mBtnX - 17)) / 36;
-      Audio.setMasterVolume(vol);
-      volBarFill.width = 36 * vol;
-    });
 
   }
 
@@ -3541,7 +3510,6 @@ export default class MainScene extends Phaser.Scene {
   showSimulatedVideoAd(adTitle: string, durationSeconds: number, onCompleteCallback: () => void) {
       if (this.isAdRunning) return;
       this.isAdRunning = true;
-      Audio.pauseBgMusic();
 
      const w = this.scale.width;
      const h = this.scale.height;
@@ -3620,7 +3588,6 @@ export default class MainScene extends Phaser.Scene {
           Audio.playCashRegister();
           adContainer.destroy();
           this.isAdRunning = false;
-          Audio.resumeBgMusic();
           onCompleteCallback();
       };
 
@@ -3652,34 +3619,50 @@ export default class MainScene extends Phaser.Scene {
       setTimeout(finishAd, (durationSeconds * 1000) + 500);
    }
 
-    showCrazyRewardedAd(adTitle: string, durationSeconds: number, onCompleteCallback: () => void) {
-       if (this.isAdRunning) return;
+     showCrazyRewardedAd(adTitle: string, durationSeconds: number, onCompleteCallback: () => void) {
+        if (this.isAdRunning) return;
 
-       const isCrazyEnv = window.location.hostname === 'localhost' ||
-                          window.location.hostname === 'crazygames.com' ||
-                          window.location.hostname.endsWith('.crazygames.com');
-       const sdk = (window as any).CrazyGames?.SDK;
+        const isCrazyEnv = window.location.hostname === 'localhost' ||
+                           window.location.hostname === 'crazygames.com' ||
+                           window.location.hostname.endsWith('.crazygames.com');
+        const sdk = (window as any).CrazyGames?.SDK;
 
-       if (!isCrazyEnv || !sdk) {
-          this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
-          return;
-       }
+        if (!isCrazyEnv || !sdk) {
+           this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
+           return;
+        }
 
-       this.isAdRunning = true;
-       Audio.pauseBgMusic();
+        this.isAdRunning = true;
 
-       sdk.ad.requestAd("rewarded")
-          .then(() => {
-             this.isAdRunning = false;
-             Audio.resumeBgMusic();
-             onCompleteCallback();
-          })
-          .catch((error: any) => {
-              console.warn("CrazyGames rewarded ad failed:", error);
+        sdk.ad.requestAd("rewarded")
+           .then(() => {
               this.isAdRunning = false;
-              this.showSimulatedVideoAd(adTitle, durationSeconds, onCompleteCallback);
-            });
-    }
+              onCompleteCallback();
+           })
+           .catch((error: any) => {
+               console.warn("CrazyGames rewarded ad failed:", error);
+               this.isAdRunning = false;
+               this.showAdUnavailableMessage(adTitle);
+             });
+     }
+
+     showAdUnavailableMessage(adTitle: string) {
+        const w = this.scale.width;
+        const h = this.scale.height;
+        const cont = this.add.container(w / 2, h / 2).setDepth(2600);
+        const veil = this.add.rectangle(0, 0, w, h, 0x000000, 0.75).setInteractive();
+        veil.on('pointerdown', () => cont.destroy());
+        const board = this.add.graphics();
+        board.fillStyle(0x1e272e, 1);
+        board.fillRoundedRect(-140, -60, 280, 120, 14);
+        board.lineStyle(3, 0xffa502, 1);
+        board.strokeRoundedRect(-140, -60, 280, 120, 14);
+        const icon = this.add.text(0, -30, '📺', { fontSize: '28px' }).setOrigin(0.5);
+        const title = this.add.text(0, 5, 'Ads unavailable', { fontSize: '16px', color: '#ffa502', fontStyle: 'bold', fontFamily: 'monospace' }).setOrigin(0.5);
+        const sub = this.add.text(0, 25, 'Try again later', { fontSize: '11px', color: '#a4b0be', fontFamily: 'monospace' }).setOrigin(0.5);
+        cont.add([veil, board, icon, title, sub]);
+        this.time.delayedCall(2000, () => { if (cont.active) cont.destroy(); });
+     }
 
    saveHighScore() {
       const sdk = (window as any).CrazyGames?.SDK;
