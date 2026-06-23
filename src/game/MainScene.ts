@@ -2870,6 +2870,7 @@ export default class MainScene extends Phaser.Scene {
         this.timeLeft = this.levelTimerBase;
         this.timerText.setColor('#ffd700');
         this.timerText.setText(`⏱️ ${this.timeLeft}s`);
+        (window as any).CrazyGames?.SDK?.game?.gameplayStart();
     }
 
     this.currentFlask = flask;
@@ -3896,7 +3897,8 @@ export default class MainScene extends Phaser.Scene {
      }
   }
 
-  gameOver() {
+   gameOver() {
+      (window as any).CrazyGames?.SDK?.game?.gameplayStop();
       this.isValidating = true;
       Audio.initAudio();
       Audio.playBuzzer();
@@ -4602,11 +4604,12 @@ export default class MainScene extends Phaser.Scene {
      });
   }
 
-  completeLevelSuccessFlow() {
-     this.isLevelSuccessPopupOpen = true;
-     
-     // Freeze the conveyor's active motion
-     if (this.currentFlask) {
+   completeLevelSuccessFlow() {
+      (window as any).CrazyGames?.SDK?.game?.gameplayStop();
+      this.isLevelSuccessPopupOpen = true;
+      
+      // Freeze the conveyor's active motion
+      if (this.currentFlask) {
          const body = this.currentFlask.body as Phaser.Physics.Arcade.Body;
          if (body) {
              body.setVelocity(0, 0);
