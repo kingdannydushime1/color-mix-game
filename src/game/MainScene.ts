@@ -4928,6 +4928,7 @@ export default class MainScene extends Phaser.Scene {
 
   startNextLevel(multiplyRewards: boolean) {
      this.isLevelSuccessPopupOpen = false;
+     this.wasRevivedThisLevel = false;
      
       // Reset droplet stocks to 3 at each level!
       this.dropletStocks = { r: 3, b: 3, y: 3 };
