@@ -8,13 +8,15 @@ export default function App() {
     let game: Phaser.Game | null = null;
 
     const init = async () => {
+      const isNarrow = window.innerWidth / window.innerHeight < 0.5 || window.innerWidth < 500;
+      const gameWidth = isNarrow ? 400 : 540;
       const config: Phaser.Types.Core.GameConfig = {
         type: Phaser.AUTO,
         parent: 'phaser-container',
         scale: {
           mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH,
-          width: 540,
+          width: gameWidth,
           height: 800
         },
         physics: {
