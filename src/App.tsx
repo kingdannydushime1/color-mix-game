@@ -6,6 +6,7 @@ export default function App() {
 
   useEffect(() => {
     let game: Phaser.Game | null = null;
+    const debugEl = document.getElementById('app-debug');
 
     const init = async () => {
       const isNarrow = window.innerWidth / window.innerHeight < 0.5 || window.innerWidth < 500;
@@ -49,7 +50,14 @@ export default function App() {
       game = new Phaser.Game(config);
     };
 
-    init();
+    init().catch(err => {
+      if (debugEl) {
+        debugEl.textContent = 'Init error: ' + (err?.message || String(err));
+        debugEl.style.display = 'block';
+      }
+    });
+
+    if (debugEl) debugEl.style.display = 'none';
 
     return () => {
       if (game) {
@@ -67,6 +75,7 @@ export default function App() {
       className="w-screen h-screen touch-none select-none overflow-hidden flex items-center justify-center relative z-10"
     >
       <div id="phaser-container" className="w-full h-full" />
+      <div id="app-debug" style={{display:'none',position:'fixed',bottom:0,left:0,right:0,zIndex:9999,background:'red',color:'white',fontSize:'14px',padding:'8px',fontFamily:'monospace',whiteSpace:'pre-wrap',wordBreak:'break-all'}} />
     </div>
   );
 }
