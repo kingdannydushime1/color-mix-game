@@ -421,6 +421,11 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
+    const deb = (msg: string) => {
+      const d = document.getElementById('app-debug');
+      if (d) { d.textContent += '\n' + msg; d.style.display = 'block'; }
+    };
+    try {
     this.score = 0;
     this.streak = 0;
 
@@ -648,6 +653,9 @@ export default class MainScene extends Phaser.Scene {
 
     if (!localStorage.getItem('tutorial_shown_v2')) {
        this.time.delayedCall(800, () => this.showTutorial());
+    }
+    } catch (e: any) {
+      deb('create() error: ' + (e?.message || String(e)) + '\n' + (e?.stack || ''));
     }
   }
 
