@@ -477,7 +477,7 @@ export default class MainScene extends Phaser.Scene {
       Audio.initAudio();
     });
 
-    this.input.keyboard!.on('keydown-F', () => {
+    this.input.keyboard?.on('keydown-F', () => {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
       } else {
@@ -638,7 +638,7 @@ export default class MainScene extends Phaser.Scene {
     });
 
     this.createPanel();
-    this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
+    this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
       if (this.isShopOpen || this.isHintOpen || this.isAdRunning || this.isLevelSuccessPopupOpen || this.isValidating) return;
       if (event.key === '1' && this.tapData[0]) this.animateAndDispense(this.tapData[0]);
       else if (event.key === '2' && this.tapData[1]) this.animateAndDispense(this.tapData[1]);
