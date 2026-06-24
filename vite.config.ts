@@ -6,7 +6,19 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     base: './',
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        name: 'no-crossorigin',
+        transformIndexHtml: {
+          enforce: 'post',
+          transform(html: string) {
+            return html.replace(/ crossorigin/g, '');
+          }
+        }
+      }
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
